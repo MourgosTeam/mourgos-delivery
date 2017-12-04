@@ -13,7 +13,7 @@ import SocketIOClient from 'socket.io-client';
 
 
 
-var DEBUG = false;
+var DEBUG = true;
 var info = (msg) => {
   if(DEBUG)console.log(msg);
 }
@@ -63,6 +63,7 @@ export default class MapScreen extends React.Component {
       this._getLocationAsync();
     }
     this.loadShops().
+    then(() => this.loadFreeOrders()).
     then(() => this.loadOrders()).
     catch((err) => console.log(err));
     this.setupSockets('all');
@@ -81,6 +82,7 @@ export default class MapScreen extends React.Component {
     info("Loading orders");
     return API.getWithToken("orders/free").
     then((data) => this.calculateLocations(data)).
+    
     then((data) => this.setState({
       freeOrderMarkers : data
     }));
@@ -93,6 +95,12 @@ export default class MapScreen extends React.Component {
     then((data) => this.setState({
       shopMarkers : data
     }));
+  }
+  
+  assignMeOrder = (code) => {
+    // assign me order
+    info("Assigning Order: " + code);
+    API.getWithToken("orders/assign/" + code);
   }
 
   calculateShopLocations = (shops) => {
@@ -176,9 +184,11 @@ export default class MapScreen extends React.Component {
     });
     this.socket.on('update-order', () => {
       this.loadOrders();
+      this.loadFreeOrders();
     });
     this.socket.on('assign-order', () => {
       this.loadOrders();
+      this.loadFreeOrders();
     });
     this.socket.on('connect_failed', function() {
        info("Sorry, there seems to be an issue with the connection!");
@@ -210,8 +220,10 @@ export default class MapScreen extends React.Component {
               coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
               title={marker.title}
               description={marker.description}
-              pinColor={'#0000ff'}
-            />
+              pinColor={'#cecece'}
+            >
+            <MapView.Callout onPress={() => this.assignMeOrder(marker.id)} />
+            </MapView.Marker>
           )}
           {this.state.orderMarkers.map( (marker, index) => 
             <MapView.Marker key={'orders' + marker.id}
