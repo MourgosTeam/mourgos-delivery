@@ -3,6 +3,7 @@ import { TouchableOpacity, KeyboardAvoidingView, ScrollView, View, Image, TextIn
 import Text from '../helpers/Text'
 
 import {styles, colors} from '../Styles';
+import Constants from '../Constants';
 import API from '../helpers/net';
 
 
@@ -108,6 +109,14 @@ export default class FreeOrderDetailsScreen extends React.Component {
               {this.state.order.Address} 
             </Text>
             <Comments text={this.state.order.Comments} />
+
+            <Text style={ { fontSize : 16, paddingBottom:5 } }>
+              Χρέωση
+            </Text>
+            <Text style={ { paddingBottom : 10 } }>
+              { ( parseFloat(this.state.order.Total) + parseFloat(this.state.order.Extra ? Constants.EXTRA : 0)).toFixed(2) }
+            </Text>
+
 
             <View style={{paddingTop: 10}}>
               <Button

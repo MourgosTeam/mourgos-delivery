@@ -3,6 +3,7 @@ import { TouchableOpacity, KeyboardAvoidingView, View, Image, TextInput, Button,
 import Text from '../helpers/Text'
 import {styles, colors} from '../Styles';
 import LoginForm from './LoginForm';
+import Constants from '../Constants';
 import API from '../helpers/net';
 
 import SocketIOClient from 'socket.io-client';
@@ -21,7 +22,7 @@ class OrderRow extends React.Component{
       var s =  `${data.Quantity} x ${data.Name}  \n`;
       s += data.Attributes.map( (attr) => {
         return `${attr.Name} - ${attr.Value}` + ((attr.Price>0)? `+ ${attr.Price}` : '') + '';
-      }).join('\n') + '\n';  
+      }).join('\n') + '\n';
       return s;
     });
     this.opened = this.props.data.Opened;
@@ -53,7 +54,7 @@ class OrderRow extends React.Component{
                   { this.statusTexts[this.props.data.Status] }
                 </Text> 
                 <Text style={styles.orderRowRightText, styles.centerText}>  
-                  { parseFloat(this.props.data.Total).toFixed(2) } €
+                  { ( parseFloat(this.props.data.Total) + parseFloat(this.props.data.Extra ? Constants.EXTRA : 0)).toFixed(2) } €
                 </Text>
               </View>
             </View> 
