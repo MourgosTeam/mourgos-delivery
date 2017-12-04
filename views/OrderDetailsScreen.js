@@ -40,8 +40,9 @@ export default class OrderDetailsScreen extends React.Component {
     }
 
 
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΑΛΘΗΚΕ', 'ΠΑΡΑΔΟΘΗΚΕ'];
+    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΑΛΘΗΚΕ'];
     this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
+    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
     this.state = {
       order: {
         Status : 0,

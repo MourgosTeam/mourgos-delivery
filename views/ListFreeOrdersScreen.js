@@ -14,6 +14,7 @@ class OrderRow extends React.Component{
     super(props);
     this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ','ΣΤΑΛΘΗΚΕ'];
     this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
+    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
     this.highlightColors = [colors.main, colors.lightgreen, colors.lightgreen]; 
     this.highlightColors[99] = colors.black;
     this.description = this.props.data.FullDescription.map((data,index) => {

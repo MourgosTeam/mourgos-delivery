@@ -1,6 +1,9 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
+  "scripts": {
+    "start": "exp start"
+  },
   "dependencies": {
     "expo": "^23.0.0",
     "react": "16.0.0",

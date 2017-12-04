@@ -10,7 +10,8 @@ export let colors = {
   gray : '#CECECE',
   lightgreen: '#60EE55',
   black: '#000000',
-  green : '#79c879'
+  green : '#79c879',
+  mapPosition: 'rgba(238,96,85,0.5)'
 };
 
 export let styles = StyleSheet.create({

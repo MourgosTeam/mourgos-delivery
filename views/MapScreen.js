@@ -38,11 +38,16 @@ export default class MapScreen extends React.Component {
       orders: [],
       location: {
         latitude: 40.6204706,
+        longitude: 22.9535798
+      },
+      region: {
+        latitude: 40.6204706,
         longitude: 22.9535798,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
       orderMarkers: [],
+      freeOrderMarkers: [],
       shopMarkers: []
     };
     Location.setApiKey("AIzaSyDmrjJLGdkenqRrg-MW3_oc_RKKSKsvbFg");
@@ -66,22 +71,31 @@ export default class MapScreen extends React.Component {
   loadOrders = () => {
     info("Loading orders");
     return API.getWithToken("orders/my").
-    then( (data) => {
-      this.setState({
-        orders: data
-      }); 
-      return data;
-    }).
-    then((data) => this.calculateLocations(data));
+    then((data) => this.calculateLocations(data)).
+    then((data) => this.setState({
+      orderMarkers : data
+    }));
+  }
+
+  loadFreeOrders = () => {
+    info("Loading orders");
+    return API.getWithToken("orders/free").
+    then((data) => this.calculateLocations(data)).
+    then((data) => this.setState({
+      freeOrderMarkers : data
+    }));
   }
 
   loadShops = () => {
     info("Loading Shops");
     return API.getWithToken("catalogues/").
-    then((data) => this.calculateShopLocations(data));
+    then((data) => this.calculateShopLocations(data)).
+    then((data) => this.setState({
+      shopMarkers : data
+    }));
   }
 
-  calculateShopLocations = async (shops) => {
+  calculateShopLocations = (shops) => {
     info("Shops:");
     info(shops);
     if(!Array.isArray(shops))return;
@@ -102,12 +116,9 @@ export default class MapScreen extends React.Component {
     }
     info("Shop Marker Array: ");
     info(arr);
-    this.setState({
-      shopMarkers: arr
-    });
-    return;
+    return arr; 
   }
-  calculateLocations = async (orders) => {
+  calculateLocations = (orders) => {
     info("Orders: ");
     info(orders);
     if(!Array.isArray(orders))return;
@@ -130,14 +141,11 @@ export default class MapScreen extends React.Component {
     }
     info("Marker Array: ");
     info(arrr);
-    this.setState({
-      orderMarkers: arrr
-    });
-    return;
+    return arrr;
   }
   
   onRegionChange = (region) =>{
-    this.setState({ location: region })
+    this.setState({ region: region })
   }
 
   _getLocationAsync = async () => {
@@ -149,12 +157,10 @@ export default class MapScreen extends React.Component {
     }
     let location = await Location.getCurrentPositionAsync({});
     console.log(location);
-    // this.setState({ location: {
-    //     latitude: location.coords.latitude,
-    //     longitude: location.coords.longitude,
-    //     latitudeDelta: 0.0922,
-    //     longitudeDelta: 0.0421,
-    // } });
+    this.setState({ location: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+    } });
   };
 
   setupSockets = (id) => {
@@ -188,10 +194,18 @@ export default class MapScreen extends React.Component {
     return (
         <MapView
           style={{ flex: 1 }}
-          region={this.state.location}
+          region={this.state.region}
           onRegionChange={this.onRegionChange}
         >
           {this.state.shopMarkers.map( (marker, index) => 
+            <MapView.Marker key={'shop' + marker.id}
+              coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
+              title={marker.title}
+              description={marker.description}
+              pinColor={'#0000ff'}
+            />
+          )}
+          {this.state.freeOrderMarkers.map( (marker, index) => 
             <MapView.Marker key={'shop' + marker.id}
               coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
               title={marker.title}
@@ -217,6 +231,15 @@ export default class MapScreen extends React.Component {
               strokeColor={colors.main}
             />
           )}
+
+          {this.state.location ? 
+            <MapView.Circle radius={25}
+            fillColor={colors.mapPosition}
+            center={ { latitude: this.state.location.latitude, longitude: this.state.location.longitude } }
+
+            />
+            : ''
+          }
         </MapView>
     );
   }
