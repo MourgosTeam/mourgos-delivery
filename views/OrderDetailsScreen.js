@@ -122,7 +122,7 @@ export default class OrderDetailsScreen extends React.Component {
               Χρέωση
             </Text>
             <Text style={ { paddingBottom : 10 } }>
-              { ( parseFloat(this.state.order.Total) + parseFloat(this.state.order.Extra ? Constants.EXTRA : 0)).toFixed(2) }
+              { (parseFloat(this.state.order.Total) + parseFloat(this.state.order.Extra ? Constants.EXTRA : 0)).toFixed(2) }
             </Text>
 
 

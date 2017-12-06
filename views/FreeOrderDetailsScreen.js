@@ -64,7 +64,8 @@ export default class FreeOrderDetailsScreen extends React.Component {
     then((data) => {
       data.statusText = this.statusTexts[data.Status];
       this.setState({order:data});
-    });
+    }).
+    then( () => API.getWithToken("orders/saw/" + this.code));
   }
 
   assignMeOrder = () => {
