@@ -14,7 +14,6 @@ export default class LoginScreen extends React.Component {
   constructor(props){
     super(props);
     this.navigation = this.props.navigation;
-    const { navigate } = this.props.navigation;
   }
   componentWillMount(){
     console.log("Component Login will mount!");

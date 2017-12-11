@@ -6,8 +6,6 @@ import LoginForm from './LoginForm';
 import Constants from '../Constants';
 import API from '../helpers/net';
 
-import SocketIOClient from 'socket.io-client';
-
 
 
 class OrderRow extends React.Component{
@@ -116,8 +114,7 @@ export default class ListFreeOrdersScreen extends React.Component {
 
 
   setupSockets = (id) => {
-    //this.socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
-    this.socket = SocketIOClient('http://192.168.1.5:3000?id=all', { path: "/socket.io/" });
+    this.socket = API.socket;
     this.socket.on('connect', () => {
       console.log("Connected to webSocket!");
     });

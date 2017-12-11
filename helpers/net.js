@@ -2,7 +2,7 @@ import { AsyncStorage, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 
 // const baseURL = "http://mourgos.gr/api/";
-const baseURL = "http://192.168.1.5:3000/";
+const baseURL = "http://192.168.1.10:3000/";
 
 var DEBUG = false;
 var info = (msg) => {
@@ -16,6 +16,9 @@ function jsonForm(data){
 	return Promise.reject("This is not json or there is an error with this data.");
 }
 
+
+//let socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
+let socket = SocketIOClient('http://192.168.1.10:3000?id=all', { path: "/socket.io/" });
 export default {
 	checkSession : function(navigation){
 		let Token = null;
@@ -109,6 +112,7 @@ export default {
             ]
         }));
   	},
+  	socket,
   	navigate(navigation, routeName, route){
 		console.log("Navigating");
 	    return navigation.dispatch(NavigationActions.navigate(

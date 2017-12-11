@@ -65,8 +65,22 @@ export default class FreeOrderDetailsScreen extends React.Component {
       data.statusText = this.statusTexts[data.Status];
       this.setState({order:data});
     }).
-    then( () => API.getWithToken("orders/saw/" + this.code));
+    then(() => {
+      return _getLocationAsync();
+    }).
+    then((location) => API.postWithToken("orders/saw/" + this.code, location));
   }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      return {};
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    return location;
+  };
+
 
   assignMeOrder = () => {
     // assign me order
