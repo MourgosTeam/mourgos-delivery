@@ -58,7 +58,7 @@ export default class LoginForm extends React.Component {
         />
         <LoginFormInput
           name = 'Κωδικός πρόσβασης'
-          secureTextEntry = {false}
+          secureTextEntry = {true}
           onChange = { (val) => this.setState({password:val}) }
           value = {this.state.password}
           style={styles.loginTextInput}

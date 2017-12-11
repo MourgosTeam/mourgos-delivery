@@ -41,7 +41,7 @@ export default class OrderDetailsScreen extends React.Component {
     }
 
 
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΑΛΘΗΚΕ'];
+    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΖΕΤΑΙ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΟ ΔΡΟΜΟ'];
     this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
     this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
     this.state = {

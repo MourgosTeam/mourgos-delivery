@@ -6,6 +6,8 @@ import {styles, colors} from '../Styles';
 import Constants from '../Constants';
 import API from '../helpers/net';
 
+import { Location, Permissions } from 'expo';
+
 
 class Comments extends React.Component {
   render() { 
@@ -41,7 +43,7 @@ export default class FreeOrderDetailsScreen extends React.Component {
     }
 
 
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΑΛΘΗΚΕ'];
+    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΖΕΤΑΙ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΟ ΔΡΟΜΟ'];
     this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
     this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
     this.state = {
@@ -66,7 +68,7 @@ export default class FreeOrderDetailsScreen extends React.Component {
       this.setState({order:data});
     }).
     then(() => {
-      return _getLocationAsync();
+      return this._getLocationAsync();
     }).
     then((location) => API.postWithToken("orders/saw/" + this.code, location));
   }

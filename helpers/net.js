@@ -1,8 +1,10 @@
 import { AsyncStorage, Alert } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 
-// const baseURL = "http://mourgos.gr/api/";
-const baseURL = "http://192.168.1.10:3000/";
+import SocketIOClient from 'socket.io-client';
+
+const baseURL = "http://mourgos.gr/api/";
+//const baseURL = "http://192.168.1.10:3000/";
 
 var DEBUG = false;
 var info = (msg) => {
@@ -17,8 +19,8 @@ function jsonForm(data){
 }
 
 
-//let socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
-let socket = SocketIOClient('http://192.168.1.10:3000?id=all', { path: "/socket.io/" });
+let socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
+//let socket = SocketIOClient('http://192.168.1.10:3000?id=all', { path: "/socket.io/" });
 export default {
 	checkSession : function(navigation){
 		let Token = null;

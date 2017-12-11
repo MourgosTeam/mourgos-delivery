@@ -172,8 +172,9 @@ export default class MapScreen extends React.Component {
   };
 
   setupSockets = (id) => {
+    this.socket = API.socket;
     //this.socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
-    this.socket = SocketIOClient('http://192.168.1.5:3000?id=all', { path: "/socket.io/" });
+    //this.socket = SocketIOClient('http://192.168.1.5:3000?id=all', { path: "/socket.io/" });
     this.socket.on('connect', () => {
       info("Connected to webSocket!");
       //this.loadOrders();
