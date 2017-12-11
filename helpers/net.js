@@ -3,7 +3,7 @@ import { NavigationActions } from 'react-navigation'
 
 import SocketIOClient from 'socket.io-client';
 
-const baseURL = "http://mourgos.gr/api/";
+const baseURL = "https://mourgos.gr/api/";
 //const baseURL = "http://192.168.1.10:3000/";
 
 var DEBUG = false;
@@ -19,7 +19,7 @@ function jsonForm(data){
 }
 
 
-let socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
+let socket = SocketIOClient('https://mourgos.gr?id=all', { path: "/api/socket.io/" });
 //let socket = SocketIOClient('http://192.168.1.10:3000?id=all', { path: "/socket.io/" });
 export default {
 	checkSession : function(navigation){
@@ -105,7 +105,7 @@ export default {
 	},
 
 	resetNavi(navigation, route){
-		console.log("Reseting");
+		info("Reseting");
 	    return navigation.dispatch(NavigationActions.reset(
         {
             index: 0,
@@ -116,7 +116,7 @@ export default {
   	},
   	socket,
   	navigate(navigation, routeName, route){
-		console.log("Navigating");
+		info("Navigating");
 	    return navigation.dispatch(NavigationActions.navigate(
         {
             routeName: routeName,
