@@ -8,11 +8,8 @@ import Constants from '../Constants';
 export default class OrderRow extends React.Component{
   constructor(props){
     super(props);
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑZETAI', 'ΕΤΟΙΜΑΣΤΗΚΕ','ΣΤΑΛΘΗΚΕ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
-    this.highlightColors = [colors.main, colors.lightgreen, colors.lightgreen]; 
-    this.highlightColors[99] = colors.black;
+    this.statusTexts = Constants.statusTexts;
+    this.highlightColors = Constants.highlightColors;
     this.description = this.props.data.FullDescription.map((data,index) => {
       var s =  `${data.Quantity} x ${data.Name}  \n`;
       s += data.Attributes.map( (attr) => {

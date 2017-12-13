@@ -9,7 +9,7 @@ import API from '../helpers/net';
 
 import OrderRow from './OrderRow.js';
 
-const DEBUG = true;
+const DEBUG = false;
 function info(r){
   if(DEBUG)console.log(r);
 }
@@ -48,7 +48,6 @@ export default class ListOrdersScreen extends React.Component {
         this._setState(...args);
     }
 
-    this.socket = API.socket;
 
     info("Constructing List");
 
@@ -59,34 +58,32 @@ export default class ListOrdersScreen extends React.Component {
       ImageUrl : require('../img/mourgos-logo-white.png')
     }
     
-    this.setupSockets('all');
     this.loadOrders().
     catch( (err) => {
       info("Error loading orders...");
       info(err);
       API.checkSession(this.navigation);
     }); 
+    this.socket = API.socket;
+    // this.socket.on('connect', () => {
+    //   this.setupSockets('all');
+    // });
+    this.setupSockets('all');
   }
 
   setupSockets = (id) => {
-    this.socket.on('connect', () => {
-      info("Connected to webSocket!");
-    });
+    info("Setup sockets!");
     this.socket.on('new-order', () => {
       info("New order!");
       this.loadOrders();
     });
     this.socket.on('update-order', () => {
+      info("update order!");
       this.loadOrders();
     });
     this.socket.on('assign-order', () => {
+      info("assign order!");
       this.loadOrders();
-    });
-    this.socket.on('connect_failed', function() {
-       info("Sorry, there seems to be an issue with the connection!");
-    });
-    this.socket.on('error', function() {
-       info("Sorry,error");
     });
   }
 
@@ -99,16 +96,16 @@ export default class ListOrdersScreen extends React.Component {
   loadOrders = ()=>{
     info("Loading orders");
     return API.getWithToken("orders/my").
-    then( (data) => {
-      const forbidden = ['99','10'];
-      let newdata = [];
-      for (var i=0; i < data.length; i += 1) {
-        if ( !forbidden.includes(data[i].Status) ) {
-          newdata.push(data[i]);
-        }
-      }
-      return newdata;
-    }).
+    // then( (data) => {
+    //   const forbidden = ['99','10'];
+    //   let newdata = [];
+    //   for (var i=0; i < data.length; i += 1) {
+    //     if ( !forbidden.includes(data[i].Status) ) {
+    //       newdata.push(data[i]);
+    //     }
+    //   }
+    //   return newdata;
+    // }).
     then( (data) => {
       this.setState({
         dataSource : this.ds.cloneWithRows(data)

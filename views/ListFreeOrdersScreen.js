@@ -34,7 +34,7 @@ export default class ListFreeOrdersScreen extends React.Component {
     this.navigation.setParams({ logout: this.logout });
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
     // avoid update while unmounted... still bad practice better encapsulate to React.NoNeedToWorryAboutSetStateOnUnmountedComponent
     this._setState = this.setState;
@@ -57,7 +57,7 @@ export default class ListFreeOrdersScreen extends React.Component {
       console.log("Error loading orders...");
       console.log(err);
       API.checkSession(this.navigation);
-    }); 
+    });
   }
 
 

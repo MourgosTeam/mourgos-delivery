@@ -24,9 +24,7 @@ export default class OrderDetailsScreen extends React.Component {
         this._setState(...args);
     }
 
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΖΕΤΑΙ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΟ ΔΡΟΜΟ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
+    this.statusTexts = Constants.statusTexts;
     this.state = {
       order: {
         Status : 0,
@@ -58,6 +56,11 @@ export default class OrderDetailsScreen extends React.Component {
     API.getWithToken("orders/free/" + this.code).
     then((order)=> this.props.navigation.goBack());
   }
+  tookFromShop = () => {
+    // assign me order
+    API.postWithToken("orders/" + this.code, { statusCode: 3 }).
+    then((order)=> this.props.navigation.goBack());
+  }
 
   deliveredOrder = () => {
     // assign me order
@@ -80,6 +83,11 @@ export default class OrderDetailsScreen extends React.Component {
                 title = "ΕΛΕΥΘΕΡΩΣΗ"
                 color = {colors.main}
                 onPress={() => this.freeOrder()}
+              />
+              <Button
+                title = "ΠΑΡΑΛΑΒΗ ΑΠΟ ΚΑΤΑΣΤΗΜΑ"
+                color = {colors.secondary}
+                onPress={() => this.tookFromShop()}
               />
               <Button
                 title = "ΠΑΡΑΔΟΘΗΚΕ"

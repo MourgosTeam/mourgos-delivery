@@ -29,9 +29,7 @@ export default class FreeOrderDetailsScreen extends React.Component {
     }
 
 
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΖΕΤΑΙ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΟ ΔΡΟΜΟ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
+    this.statusTexts = Constants.statusTexts;
     this.state = {
       order: {
         Status : 0,

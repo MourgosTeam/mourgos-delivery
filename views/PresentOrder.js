@@ -5,6 +5,7 @@ import Text from '../helpers/Text'
 import {styles, colors} from '../Styles';
 import Constants from '../Constants';
 import API from '../helpers/net';
+import Anchor from '../helpers/Anchor'
 
 
 class Comments extends React.Component {
@@ -34,9 +35,7 @@ export default class PresentOrder extends React.Component {
   constructor(props){
     super(props);
     // avoid update while unmounted... still bad practice better encapsulate to React.NoNeedToWorryAboutSetStateOnUnmountedComponent
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΖΕΤΑΙ', 'ΕΤΟΙΜΑΣΤΗΚΕ', 'ΣΤΟ ΔΡΟΜΟ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
+    this.statusTexts = Constants.statusTexts;
   }
 
   render() {
@@ -77,9 +76,9 @@ export default class PresentOrder extends React.Component {
             <Text style={ { paddingBottom : 10 } }>
               Όροφος : {this.props.order.Orofos} 
             </Text>
-            <Text style={ { paddingBottom : 10 } }>
+            <Anchor href={'tel:'+this.props.order.Phone} style={ { paddingBottom: 10, textDecorationLine: 'underline' } }>
               Τηλέφωνο : {this.props.order.Phone} 
-            </Text>
+            </Anchor>
             
             <Comments text={this.props.order.Comments} />
 

@@ -40,7 +40,10 @@ export default class LoginScreen extends React.Component {
     then( () => {
      return API.checkSession(this.navigation)
     }).
-    then( () => API.resetNavi(this.navigation, "HomeStack")).
+    then( () => {
+      if(this._mounted)
+        API.resetNavi(this.navigation, "HomeStack")
+    }).
     catch( (err) => { console.log("EROOR"); console.log(err); } );
   }
   render() {

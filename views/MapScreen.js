@@ -13,7 +13,7 @@ import SocketIOClient from 'socket.io-client';
 
 
 
-var DEBUG = true;
+var DEBUG = false;
 var info = (msg) => {
   if(DEBUG)console.log(msg);
 }
@@ -92,10 +92,13 @@ export default class MapScreen extends React.Component {
     info("Loading orders");
     return API.getWithToken("orders/free").
     then( (data) => {
-      const forbidden = ["99","0", "10"];
+      const forbidden = ["99", "10"];
       let newdata = [];
       for (var i=0; i < data.length; i += 1) {
-        if ( !forbidden.includes(data[i].Status) ) {
+        if(data[i].Status == "0" || data[i].Status == 0){
+          newdata.push(data[i]);
+        }
+        else if ( !forbidden.includes(data[i].Status) ) {
           newdata.push(data[i]);
         }
       }
@@ -193,15 +196,12 @@ export default class MapScreen extends React.Component {
 
   setupSockets = (id) => {
     this.socket = API.socket;
-    //this.socket = SocketIOClient('http://mourgos.gr?id=all', { path: "/api/socket.io/" });
-    //this.socket = SocketIOClient('http://192.168.1.5:3000?id=all', { path: "/socket.io/" });
     this.socket.on('connect', () => {
       info("Connected to webSocket!");
-      //this.loadOrders();
     });
     this.socket.on('new-order', () => {
       info("New order!");
-      //this.loadOrders();
+      this.loadFreeOrders();
     });
     this.socket.on('update-order', () => {
       this.loadOrders();

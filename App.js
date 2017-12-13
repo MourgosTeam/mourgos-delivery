@@ -13,7 +13,7 @@ import {View, Text, Platform, StatusBar} from 'react-native';
 import Tabs from 'react-native-tabs';
 import {StackNavigator, TabNavigator} from 'react-navigation';
 
-import API from '../helpers/net';
+import API from './helpers/net';
 
 //////// NAVI STUFF //////////////////
 const OrderNavi = StackNavigator({
@@ -78,7 +78,7 @@ const RootNavi = StackNavigator({
 ////////////////////////////////////////////
 //////// TRACKING STUFF ///////////////////
 //////////////////////////////////////////
-const DEBUG = true;
+const DEBUG = false;
 const info = (m) => {
   if(DEBUG)console.log(m);
 }
@@ -86,8 +86,8 @@ const info = (m) => {
 const saveLocation = (coords) => {
   info("Location to be saved!");
   info(coords);
-
-  API.postWithToken('/log/mylocation', coords);
+  //check token first!
+  API.postWithToken('log/mylocation', coords);
 }
 
 let Watcher = null;
