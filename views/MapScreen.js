@@ -72,6 +72,16 @@ export default class MapScreen extends React.Component {
   loadOrders = () => {
     info("Loading orders");
     return API.getWithToken("orders/my").
+    then( (data) => {
+      const forbidden = ["99","0", "10"];
+      let newdata = [];
+      for (var i=0; i < data.length; i += 1) {
+        if ( !forbidden.includes(data[i].Status) ) {
+          newdata.push(data[i]);
+        }
+      }
+      return newdata;
+    }).
     then((data) => this.calculateLocations(data)).
     then((data) => this.setState({
       orderMarkers : data
@@ -81,6 +91,16 @@ export default class MapScreen extends React.Component {
   loadFreeOrders = () => {
     info("Loading orders");
     return API.getWithToken("orders/free").
+    then( (data) => {
+      const forbidden = ["99","0", "10"];
+      let newdata = [];
+      for (var i=0; i < data.length; i += 1) {
+        if ( !forbidden.includes(data[i].Status) ) {
+          newdata.push(data[i]);
+        }
+      }
+      return newdata;
+    }).
     then((data) => this.calculateLocations(data)).
     
     then((data) => this.setState({

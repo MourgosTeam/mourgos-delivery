@@ -7,58 +7,11 @@ import Constants from '../Constants';
 import API from '../helpers/net';
 
 
+import OrderRow from './OrderRow.js';
 
-class OrderRow extends React.Component{
-  constructor(props){
-    super(props);
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ','ΣΤΑΛΘΗΚΕ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
-    this.highlightColors = [colors.main, colors.lightgreen, colors.lightgreen]; 
-    this.highlightColors[99] = colors.black;
-    this.description = this.props.data.FullDescription.map((data,index) => {
-      var s =  `${data.Quantity} x ${data.Name}  \n`;
-      s += data.Attributes.map( (attr) => {
-        return `${attr.Name} - ${attr.Value}` + ((attr.Price>0)? `+ ${attr.Price}` : '') + '';
-      }).join('\n') + '\n';  
-      return s;
-    });
-    this.opened = this.props.data.Opened;
-    this.bg = this.opened === "1" ? colors.main : colors.secondary;
-
-  }
-
-
-  componentWillUpdate(props){
-    this.bg = props.data.Opened === "1" ? colors.main : colors.secondary
-  }
-
-  render() {
-    return (<TouchableOpacity style={{backgroundColor : this.bg}} onPress={() => this.props.onPress(this.props.data.id)}>
-            <View style = {styles.orderRow}>
-              <View style = {styles.orderRowLeft}>
-                <Text style={styles.orderRowLeftText, styles.boldText}>
-                  {this.props.data.ShopName} - {this.props.data.id.toUpperCase()}
-                </Text>
-                <Text style={styles.orderRowLeftText}>
-                  {this.props.data.Address}
-                </Text>
-                <Text style={styles.orderRowLeftText, styles.boldText}>
-                  {this.props.data.Name}
-                </Text>
-              </View>
-              <View style = {styles.orderRowRight}>
-                <Text style={styles.orderRowRightText, styles.centerText, styles.boldText , {color: this.highlightColors[this.props.data.Status]}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                  { this.statusTexts[this.props.data.Status] }
-                </Text> 
-                <Text style={styles.orderRowRightText, styles.centerText}>  
-                  { ( parseFloat(this.props.data.Total) + parseFloat(this.props.data.Extra ? Constants.EXTRA : 0)).toFixed(2) } €
-                </Text>
-              </View>
-            </View> 
-            </TouchableOpacity>);
-  }
-
+const DEBUG = true;
+function info(r){
+  if(DEBUG)console.log(r);
 }
 
 const imageBaseURL = "http://mourgos.gr";
@@ -97,7 +50,7 @@ export default class ListOrdersScreen extends React.Component {
 
     this.socket = API.socket;
 
-    console.log("Constructing List");
+    info("Constructing List");
 
     this.navigation = props.navigation;
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -109,19 +62,18 @@ export default class ListOrdersScreen extends React.Component {
     this.setupSockets('all');
     this.loadOrders().
     catch( (err) => {
-      console.log("Error loading orders...");
-      console.log(err);
+      info("Error loading orders...");
+      info(err);
       API.checkSession(this.navigation);
     }); 
   }
 
-
   setupSockets = (id) => {
     this.socket.on('connect', () => {
-      console.log("Connected to webSocket!");
+      info("Connected to webSocket!");
     });
     this.socket.on('new-order', () => {
-      console.log("New order!");
+      info("New order!");
       this.loadOrders();
     });
     this.socket.on('update-order', () => {
@@ -131,22 +83,32 @@ export default class ListOrdersScreen extends React.Component {
       this.loadOrders();
     });
     this.socket.on('connect_failed', function() {
-       console.log("Sorry, there seems to be an issue with the connection!");
+       info("Sorry, there seems to be an issue with the connection!");
     });
     this.socket.on('error', function() {
-       console.log("Sorry,error");
+       info("Sorry,error");
     });
   }
 
   logout = () => {
-    console.log("Logging out...");
+    info("Logging out...");
     return AsyncStorage.removeItem("@Mourgos:token").
     then(() => API.navigate(this.props.navigation,  "Login", "Login"));
   }
 
   loadOrders = ()=>{
-    console.log("Loading orders");
+    info("Loading orders");
     return API.getWithToken("orders/my").
+    then( (data) => {
+      const forbidden = ['99','10'];
+      let newdata = [];
+      for (var i=0; i < data.length; i += 1) {
+        if ( !forbidden.includes(data[i].Status) ) {
+          newdata.push(data[i]);
+        }
+      }
+      return newdata;
+    }).
     then( (data) => {
       this.setState({
         dataSource : this.ds.cloneWithRows(data)
@@ -155,13 +117,6 @@ export default class ListOrdersScreen extends React.Component {
   }
   
   goToOrder = (orderId) => {
-    if (this.soundPlayer)
-      this.soundPlayer.getCurrentTime((seconds,playing) => {
-        if (playing) {
-          this.soundPlayer.stop();
-          console.log("Stopping sound........");
-        }
-      });
     this.props.navigation.navigate("OrderDetails",{orderId : orderId});
   }
 

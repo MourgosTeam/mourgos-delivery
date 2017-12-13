@@ -6,7 +6,7 @@ import SocketIOClient from 'socket.io-client';
 const baseURL = "https://mourgos.gr/api/";
 //const baseURL = "http://192.168.1.10:3000/";
 
-var DEBUG = false;
+var DEBUG = true;
 var info = (msg) => {
 	if(DEBUG)console.log(msg + "\n");
 }
@@ -27,8 +27,10 @@ export default {
 		info("Checking session...");
 		return AsyncStorage.getItem("@Mourgos:token").then( (token) => {
 			Token = token;
+			console.log("Here");
 			return this.getIt("check/session",token);
 		}).then((data) => {
+			console.log("HEU");
 			if( data === undefined ){
 				info("There is no internet!");
 				// Works on both iOS and Android

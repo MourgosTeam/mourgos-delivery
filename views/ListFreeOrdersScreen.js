@@ -6,60 +6,9 @@ import LoginForm from './LoginForm';
 import Constants from '../Constants';
 import API from '../helpers/net';
 
+import OrderRow from './OrderRow.js';
 
 
-class OrderRow extends React.Component{
-  constructor(props){
-    super(props);
-    this.statusTexts = ['ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ', 'ΕΤΟΙΜΑΣΤΗΚΕ','ΣΤΑΛΘΗΚΕ'];
-    this.statusTexts[99] = 'ΑΠΟΡΡΙΦΘΗΚΕ';
-    this.statusTexts[10] = 'ΠΑΡΑΔΟΘΗΚΕ';
-    this.highlightColors = [colors.main, colors.lightgreen, colors.lightgreen]; 
-    this.highlightColors[99] = colors.black;
-    this.description = this.props.data.FullDescription.map((data,index) => {
-      var s =  `${data.Quantity} x ${data.Name}  \n`;
-      s += data.Attributes.map( (attr) => {
-        return `${attr.Name} - ${attr.Value}` + ((attr.Price>0)? `+ ${attr.Price}` : '') + '';
-      }).join('\n') + '\n';
-      return s;
-    });
-    this.opened = this.props.data.Opened;
-    this.bg = this.opened === "1" ? colors.main : colors.secondary;
-
-  }
-
-
-  componentWillUpdate(props){
-    this.bg = props.data.Opened === "1" ? colors.main : colors.secondary
-  }
-
-  render() {
-    return (<TouchableOpacity style={{backgroundColor : this.bg}} onPress={() => this.props.onPress(this.props.data.id)}>
-            <View style = {styles.orderRow}>
-              <View style = {styles.orderRowLeft}>
-                <Text style={styles.orderRowLeftText, styles.boldText}>
-                  {this.props.data.ShopName} - {this.props.data.id.toUpperCase()}
-                </Text>
-                <Text style={styles.orderRowLeftText}>
-                  {this.props.data.Address}
-                </Text>
-                <Text style={styles.orderRowLeftText, styles.boldText}>
-                  {this.props.data.Name}
-                </Text>
-              </View>
-              <View style = {styles.orderRowRight}>
-                <Text style={styles.orderRowRightText, styles.centerText, styles.boldText , {color: this.highlightColors[this.props.data.Status]}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                  { this.statusTexts[this.props.data.Status] }
-                </Text> 
-                <Text style={styles.orderRowRightText, styles.centerText}>  
-                  { ( parseFloat(this.props.data.Total) + parseFloat(this.props.data.Extra ? Constants.EXTRA : 0)).toFixed(2) } €
-                </Text>
-              </View>
-            </View> 
-            </TouchableOpacity>);
-  }
-
-}
 
 const imageBaseURL = "http://mourgos.gr";
 
@@ -71,18 +20,17 @@ export default class ListFreeOrdersScreen extends React.Component {
       <View style={styles.logoutButton}>
       <Button
         title="Logout"
-        onPress={params.logout ? params.logout : () => null}
+        onPress={params.logout ? params.logout : () => false}
       />
       </View>
     );
     return { title, headerRight };
   };
   componentWillUnmount(){this._mounted = false}
-  componentWillMount(){this._mounted = true;
-    API.checkSession(this.navigation);
-  }
+  componentWillMount(){this._mounted = true;}
 
   componentDidMount(){
+    API.checkSession(this.navigation);
     this.navigation.setParams({ logout: this.logout });
   }
 
@@ -146,6 +94,16 @@ export default class ListFreeOrdersScreen extends React.Component {
     console.log("Loading orders");
     return API.getWithToken("orders/free").
     then( (data) => {
+      const forbidden = ["99", "10"];
+      let newdata = [];
+      for (var i=0; i < data.length; i += 1) {
+        if ( !forbidden.includes(data[i].Status) ) {
+          newdata.push(data[i]);
+        }
+      }
+      return newdata;
+    }).
+    then( (data) => {
       this.setState({
         dataSource : this.ds.cloneWithRows(data)
       }); 
@@ -153,13 +111,6 @@ export default class ListFreeOrdersScreen extends React.Component {
   }
 
   goToOrder = (orderId) => {
-    if (this.soundPlayer)
-      this.soundPlayer.getCurrentTime((seconds,playing) => {
-        if (playing) {
-          this.soundPlayer.stop();
-          console.log("Stopping sound........");
-        }
-      });
     this.props.navigation.navigate("OrderDetails",{orderId : orderId});
   }
 

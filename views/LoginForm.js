@@ -10,8 +10,8 @@ export default class LoginForm extends React.Component {
     super(props);
 
     this.state = {
-      username : "",
-      password : ""
+      username : "mourgos",
+      password : "deliveryatmourgos"
     }
   }
 
@@ -51,7 +51,7 @@ export default class LoginForm extends React.Component {
       <View
         style = {styles.loginForm}>
         <LoginFormInput
-          name = 'Αναγνωριστικό καταστήματος'
+          name = 'Αναγνωριστικό διανομέα'
           onChange = { (val) => this.setState({username:val}) }
           value = {this.state.username}
           style={styles.loginTextInput}

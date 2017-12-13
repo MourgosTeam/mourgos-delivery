@@ -17,27 +17,28 @@ export default class LoginScreen extends React.Component {
   }
   componentWillMount(){
     console.log("Component Login will mount!");
-    AsyncStorage.getItem("@Mourgos:token").then( (data) => {
-      if(data !== null )
-        API.checkSession(this.navigation.navigate).then( () => {
-          if(this._mounted)
-            API.resetNavi(this.navigation, "HomeStack")
-        });
-    });
     this._mounted = true;
+    this.check();
   }
   
   componentWillUnmount(){
     this._mounted = false;
   }
 
+  check = () => {
+    AsyncStorage.getItem("@Mourgos:token").then( (data) => {
+      if(data !== null )
+        API.checkSession(this.navigation).then( () => {
+          if(this._mounted)
+            API.resetNavi(this.navigation, "HomeStack")
+        });
+    });
+  }
   loggedIn = (user) =>{
-    console.log(user);
     if(!user.token)return;
     AsyncStorage.setItem("@Mourgos:token", user.token).
     then( () => {
-      console.log("HERE");
-     return API.checkSession(this.navigation.navigate)
+     return API.checkSession(this.navigation)
     }).
     then( () => API.resetNavi(this.navigation, "HomeStack")).
     catch( (err) => { console.log("EROOR"); console.log(err); } );
