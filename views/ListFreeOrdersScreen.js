@@ -8,8 +8,6 @@ import API from '../helpers/net';
 
 import OrderRow from './OrderRow.js';
 
-
-
 const imageBaseURL = "http://mourgos.gr";
 
 export default class ListFreeOrdersScreen extends React.Component {
@@ -18,10 +16,16 @@ export default class ListFreeOrdersScreen extends React.Component {
     let title = 'Παραγγελίες';
     let headerRight = (
       <View style={styles.logoutButton}>
-      <Button
-        title="Logout"
-        onPress={params.logout ? params.logout : () => false}
-      />
+        <View style={{paddingRight: 5}}>
+          <Button
+            title="Refresh"
+            onPress={params.refresh ? params.refresh : () => null}
+          />
+        </View>
+        <Button
+          title="Logout"
+          onPress={params.logout ? params.logout : () => null}
+        />
       </View>
     );
     return { title, headerRight };
@@ -31,7 +35,7 @@ export default class ListFreeOrdersScreen extends React.Component {
 
   componentDidMount(){
     API.checkSession(this.navigation);
-    this.navigation.setParams({ logout: this.logout });
+    this.navigation.setParams({ logout: this.logout, refresh: this.loadOrders });
   }
 
   constructor(props) {
@@ -93,17 +97,18 @@ export default class ListFreeOrdersScreen extends React.Component {
   loadOrders = ()=>{
     console.log("Loading orders");
     return API.getWithToken("orders/free").
+    // then( (data) => {
+    //   const forbidden = ["99", "10"];
+    //   let newdata = [];
+    //   for (var i=0; i < data.length; i += 1) {
+    //     if ( !forbidden.includes(data[i].Status) ) {
+    //       newdata.push(data[i]);
+    //     }
+    //   }
+    //   return newdata;
+    // }).
     then( (data) => {
-      const forbidden = ["99", "10"];
-      let newdata = [];
-      for (var i=0; i < data.length; i += 1) {
-        if ( !forbidden.includes(data[i].Status) ) {
-          newdata.push(data[i]);
-        }
-      }
-      return newdata;
-    }).
-    then( (data) => {
+      console.log(data);
       this.setState({
         dataSource : this.ds.cloneWithRows(data)
       }); 

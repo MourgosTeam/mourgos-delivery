@@ -14,6 +14,12 @@ export default class LoginScreen extends React.Component {
   constructor(props){
     super(props);
     this.navigation = this.props.navigation;
+    // avoid update while unmounted... still bad practice better encapsulate to React.NoNeedToWorryAboutSetStateOnUnmountedComponent
+    this._setState = this.setState;
+    this.setState = (...args) => {
+      if(this._mounted)
+        this._setState(...args);
+    }
   }
   componentWillMount(){
     console.log("Component Login will mount!");

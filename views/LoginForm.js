@@ -1,25 +1,67 @@
 import React from 'react';
-import { KeyboardAvoidingView, View, Image, TextInput, Button, Alert} from 'react-native';
+import { KeyboardAvoidingView, View, Image, TextInput, Button, Alert, Switch, AsyncStorage} from 'react-native';
 import Text from '../helpers/Text'
 import {styles, colors} from '../Styles';
 import LoginFormInput from './LoginFormInput';
 import API from '../helpers/net';
 
 export default class LoginForm extends React.Component {
+  componentDidMount(){
+    this._mounted = true;
+    AsyncStorage.getItem('@Mourgos:LoginData').then((data) => {
+      return JSON.parse(data);
+    }).then((data) => {
+      console.log(data);
+      this.setState(data);
+    }).
+    catch((err) => {
+      console.log("No rememberMe Data");
+    });
+  }
+  
+  componentWillUnmount(){
+    this._mounted = false;
+  }
   constructor(props){
     super(props);
 
+
     this.state = {
-      username : "mourgos",
-      password : "deliveryatmourgos"
+      username : "",
+      password : "",
+      rememberMe : false
     }
+    
   }
 
-  login = () => {
+  toggleRemember = (value) => { 
+    this.setState({
+      rememberMe: value
+    });
+  }
+
+  login = async () => {
     var user = {
       username : this.state.username,
       password : this.state.password
     };
+    
+    if (this.state.rememberMe) {
+      try {
+        let data = this.state;
+        await AsyncStorage.setItem('@Mourgos:LoginData', JSON.stringify(data));
+      } catch (error) {
+        console.log("cannot set asyncStorage on rememberMe Login");
+      }
+    }
+    else{
+      try {
+        await AsyncStorage.removeItem('@Mourgos:LoginData');
+      } catch (error) {
+        console.log("cannot set asyncStorage on rememberMe Login");
+      } 
+    }
+
     API.postIt("users/login",user).then((data) => {
       if(data.status !== 200){
         return Promise.reject("Bad credentials");
@@ -63,6 +105,10 @@ export default class LoginForm extends React.Component {
           value = {this.state.password}
           style={styles.loginTextInput}
         />
+        <View style={styles.logoutButton}>
+          <Text>Θυμήσου τα στοιχεία μου</Text>
+          <Switch onValueChange={this.toggleRemember} value={this.state.rememberMe}/>
+        </View>
         <Button
           title = "Συνδεση"
           color = {colors.dark}

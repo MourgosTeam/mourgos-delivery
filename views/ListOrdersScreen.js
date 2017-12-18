@@ -22,10 +22,16 @@ export default class ListOrdersScreen extends React.Component {
     let title = 'Παραγγελίες';
     let headerRight = (
       <View style={styles.logoutButton}>
-      <Button
-        title="Logout"
-        onPress={params.logout ? params.logout : () => null}
-      />
+        <View style={{paddingRight: 5}}>
+          <Button
+            title="Refresh"
+            onPress={params.refresh ? params.refresh : () => null}
+          />
+        </View>
+        <Button
+          title="Logout"
+          onPress={params.logout ? params.logout : () => null}
+        />
       </View>
     );
     return { title, headerRight };
@@ -36,7 +42,7 @@ export default class ListOrdersScreen extends React.Component {
   }
 
   componentDidMount(){
-    this.navigation.setParams({ logout: this.logout });
+    this.navigation.setParams({ logout: this.logout, refresh: this.loadOrders });
   }
 
   constructor(props){

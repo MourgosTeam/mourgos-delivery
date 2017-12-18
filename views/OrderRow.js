@@ -46,7 +46,7 @@ export default class OrderRow extends React.Component{
                   { this.statusTexts[this.props.data.Status] }
                 </Text> 
                 <Text style={styles.orderRowRightText, styles.centerText}>  
-                  { ( parseFloat(this.props.data.Total) + parseFloat(this.props.data.Extra ? Constants.EXTRA : 0)).toFixed(2) } €
+                  { parseFloat(this.props.data.FinalPrice).toFixed(2) } €
                 </Text>
               </View>
             </View> 
