@@ -3,8 +3,8 @@ import { NavigationActions } from 'react-navigation'
 
 import SocketIOClient from 'socket.io-client';
 
-const baseURL = "https://mourgos.gr/api/";
-//const baseURL = "http://192.168.2.4:3000/";
+//const baseURL = "https://mourgos.gr/api/";
+const baseURL = "http://192.168.2.4:3000/";
 
 var DEBUG = false;
 var info = (msg) => {
@@ -19,8 +19,8 @@ function jsonForm(data){
 }
 
 
-let socket = SocketIOClient('https://mourgos.gr?id=all', { path: "/api/socket.io/" });
-//let socket = SocketIOClient('http://192.168.2.4:3000?id=all', { path: "/socket.io/" });
+//let socket = SocketIOClient('https://mourgos.gr?id=all', { path: "/api/socket.io/" });
+let socket = SocketIOClient('http://192.168.2.4:3000?id=all', { path: "/socket.io/" });
 socket.on('connect', function() {
    console.log("socket connect!");
 });

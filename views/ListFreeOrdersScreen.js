@@ -6,7 +6,9 @@ import LoginForm from './LoginForm';
 import Constants from '../Constants';
 import API from '../helpers/net';
 
+import Section from './Section.js';
 import OrderRow from './OrderRow.js';
+import OrdersListView from './OrdersListView.js';
 
 const imageBaseURL = "http://mourgos.gr";
 
@@ -50,9 +52,8 @@ export default class ListFreeOrdersScreen extends React.Component {
     console.log("Constructing List");
 
     this.navigation = props.navigation;
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource : this.ds.cloneWithRows([]),
+      orders: [],
       ImageUrl : require('../img/mourgos-logo-white.png')
     }
     
@@ -108,9 +109,8 @@ export default class ListFreeOrdersScreen extends React.Component {
     //   return newdata;
     // }).
     then( (data) => {
-      console.log(data);
       this.setState({
-        dataSource : this.ds.cloneWithRows(data)
+        orders: data
       }); 
     });
   }
@@ -118,17 +118,28 @@ export default class ListFreeOrdersScreen extends React.Component {
   goToOrder = (orderId) => {
     this.props.navigation.navigate("OrderDetails",{orderId : orderId});
   }
+  
+  assignMeOrders = (data) => {
+    let ids = data.map((d) => d.id);
+
+    let proms = [];
+    for(var i in ids) {
+      proms.push(API.getWithToken("orders/assign/" + ids[i]));
+    }
+    // assign me order
+    Promise.all(proms).
+    then(() => this.loadOrders());
+  }
 
   render() {
     return (
       <KeyboardAvoidingView 
         behavior = "padding"
         style = {styles.container}>
-        <ListView style={styles.orderList}
-            enableEmptySections={true} 
-            dataSource={this.state.dataSource}
+        <OrdersListView style={styles.orderList}
+            orders={this.state.orders}
             renderRow={(rowData) => <OrderRow data={rowData} onPress={this.goToOrder}/>}
-          />
+            renderSectionHeader={(section, category) => <Section data={section} key={category} onPress={this.assignMeOrders}/>}/>
       </KeyboardAvoidingView>
     );
   }

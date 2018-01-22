@@ -34,12 +34,6 @@ export default class OrderRow extends React.Component{
                 <Text style={styles.orderRowLeftText, styles.boldText}>
                   {this.props.data.ShopName} - {this.props.data.id.toUpperCase()}
                 </Text>
-                <Text style={styles.orderRowLeftText}>
-                  {this.props.data.Address}
-                </Text>
-                <Text style={styles.orderRowLeftText, styles.boldText}>
-                  {this.props.data.Name}
-                </Text>
               </View>
               <View style = {styles.orderRowRight}>
                 <Text style={styles.orderRowRightText, styles.centerText, styles.boldText , {color: this.highlightColors[this.props.data.Status]}} adjustsFontSizeToFit={true} numberOfLines={1}>

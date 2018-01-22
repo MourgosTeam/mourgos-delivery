@@ -12,7 +12,9 @@ export default class LoginForm extends React.Component {
       return JSON.parse(data);
     }).then((data) => {
       console.log(data);
-      this.setState(data);
+      if(this._mounted === true) {
+        this.setState(data);
+      }
     }).
     catch((err) => {
       console.log("No rememberMe Data");

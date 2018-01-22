@@ -58,6 +58,15 @@ export let styles = StyleSheet.create({
   orderList: {
     width:'100%',
   },
+  section: {
+    backgroundColor: colors.secondary,
+    borderTopWidth: 10,
+    borderColor: colors.main,
+    padding: 10,
+  },
+  whiteText: {
+    color: colors.white
+  },
   orderRow : {
     backgroundColor: colors.white,
     flex: 1,

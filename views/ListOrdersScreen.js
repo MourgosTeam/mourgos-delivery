@@ -8,6 +8,8 @@ import API from '../helpers/net';
 
 
 import OrderRow from './OrderRow.js';
+import Section from './Section.js';
+import OrdersListView from './OrdersListView.js';
 
 const DEBUG = false;
 function info(r){
@@ -58,9 +60,10 @@ export default class ListOrdersScreen extends React.Component {
     info("Constructing List");
 
     this.navigation = props.navigation;
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
     this.state = {
-      dataSource : this.ds.cloneWithRows([]),
+      // dataSource : this.ds.cloneWithRows([]),
+      orders : [],
       ImageUrl : require('../img/mourgos-logo-white.png')
     }
     
@@ -71,9 +74,6 @@ export default class ListOrdersScreen extends React.Component {
       API.checkSession(this.navigation);
     }); 
     this.socket = API.socket;
-    // this.socket.on('connect', () => {
-    //   this.setupSockets('all');
-    // });
     this.setupSockets('all');
   }
 
@@ -114,7 +114,7 @@ export default class ListOrdersScreen extends React.Component {
     // }).
     then( (data) => {
       this.setState({
-        dataSource : this.ds.cloneWithRows(data)
+        orders : data
       }); 
     });
   }
@@ -128,10 +128,10 @@ export default class ListOrdersScreen extends React.Component {
       <KeyboardAvoidingView 
         behavior = "padding"
         style = {styles.container}>
-        <ListView style={styles.orderList}
-            enableEmptySections={true} 
-            dataSource={this.state.dataSource}
+        <OrdersListView style={styles.orderList}
+            orders={this.state.orders}
             renderRow={(rowData) => <OrderRow data={rowData} onPress={this.goToOrder}/>}
+            renderSectionHeader={(section, category) => <Section data={section} key={category} />}
           />
       </KeyboardAvoidingView>
     );
