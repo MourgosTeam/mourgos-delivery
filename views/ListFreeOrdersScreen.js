@@ -139,7 +139,7 @@ export default class ListFreeOrdersScreen extends React.Component {
         <OrdersListView style={styles.orderList}
             orders={this.state.orders}
             renderRow={(rowData) => <OrderRow data={rowData} onPress={this.goToOrder}/>}
-            renderSectionHeader={(section, category) => <Section data={section} key={category} onPress={this.assignMeOrders}/>}/>
+            renderSectionHeader={(section, category) => <Section data={section} key={category} onPress={this.assignMeOrders} buttonText={'ΚΑΤΟΧΥΡΩΣΗ'}/>}/>
       </KeyboardAvoidingView>
     );
   }

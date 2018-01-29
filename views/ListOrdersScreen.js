@@ -122,7 +122,19 @@ export default class ListOrdersScreen extends React.Component {
   goToOrder = (orderId) => {
     this.props.navigation.navigate("OrderDetails",{orderId : orderId});
   }
+  
+  freeOrders = (data) => {
+    let ids = data.map((d) => d.id);
 
+    let proms = [];
+    for(var i in ids) {
+      proms.push(API.getWithToken("orders/free/" + ids[i]));
+    }
+    // assign me order
+    Promise.all(proms).
+    then(() => this.loadOrders());
+  }
+  
   render() {
     return (
       <KeyboardAvoidingView 
@@ -131,7 +143,7 @@ export default class ListOrdersScreen extends React.Component {
         <OrdersListView style={styles.orderList}
             orders={this.state.orders}
             renderRow={(rowData) => <OrderRow data={rowData} onPress={this.goToOrder}/>}
-            renderSectionHeader={(section, category) => <Section data={section} key={category} />}
+            renderSectionHeader={(section, category) => <Section data={section} key={category} onPress={this.freeOrders} buttonText={"ΕΛΕΥΘΕΡΩΣΗ"} />}
           />
       </KeyboardAvoidingView>
     );

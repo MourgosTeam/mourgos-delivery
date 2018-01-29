@@ -5,6 +5,35 @@ import {styles, colors} from '../Styles';
 import LoginFormInput from './LoginFormInput';
 import API from '../helpers/net';
 
+import { Permissions, Notifications } from 'expo';
+
+const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
+
+async function getNotificationToken() {
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (existingStatus !== 'granted') {
+    // Android remote notification permissions are granted during the app
+    // install, so this will only ask on iOS
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  if (finalStatus !== 'granted') {
+    return;
+  }
+
+  // Get the token that uniquely identifies this device
+  let token = await Notifications.getExpoPushTokenAsync();
+  return token;
+}
+
 export default class LoginForm extends React.Component {
   componentDidMount(){
     this._mounted = true;
@@ -43,11 +72,14 @@ export default class LoginForm extends React.Component {
   }
 
   login = async () => {
+    let devtoken = await getNotificationToken();
     var user = {
       username : this.state.username,
-      password : this.state.password
+      password : this.state.password,
+      deviceToken: devtoken
     };
-    
+    console.log("Device Token: ");
+    console.log(devtoken);
     if (this.state.rememberMe) {
       try {
         let data = this.state;

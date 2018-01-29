@@ -20,7 +20,7 @@ export default class Section extends React.Component{
             </Text>
             {this.props.onPress &&
               <Button
-                title = "ΚΑΤΟΧΥΡΩΣΗ"
+                title = {this.props.buttonText}
                 color = {colors.green}
                 onPress={() => this.props.onPress(this.props.data)}
               />}
